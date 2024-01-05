@@ -42,4 +42,32 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Funcion User 1 - 0..* Rewards
+     */
+    public function rewards() { 
+        return $this->hasMany(Reward::class); 
+    }
+
+    /**
+     * Funcion User 0..1 - 0..* Tasks
+     */
+    public function tasks() { 
+        return $this->hasMany(Task::class); 
+    }
+
+    /**
+     * Funcion User 1 - 0..1 Group
+     */
+    public function userGroup() { 
+        return $this->hasOne(Group::class); 
+    }
+
+    /**
+     * Funcion User 0..1 - 0..1 Group
+     */
+    public function coupleGroup() { 
+        return $this->belongsTo(Group::class); 
+    }
 }
