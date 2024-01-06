@@ -32,15 +32,15 @@ class AuthController extends Controller
                 ], 400);
             }
 
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
-            ]);
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->save();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Success Sign Up'
+                'message' => 'Success, SignUp'
                 //'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
 
@@ -85,7 +85,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => 'Success Log In',
+                'message' => 'Success, LogIn',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
 
