@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GroupController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -19,17 +20,16 @@ use Illuminate\Validation\ValidationException;
 */
 
 // AUTH
-Route::post('/auth/signup', [AuthController::class, 'SignUp']);
-Route::post('/auth/login', [AuthController::class, 'LogIn']);
+Route::post('/auth/signup', [AuthController::class, 'signUp']);
+Route::post('/auth/login', [AuthController::class, 'logIn']);
 
 // PROTECTED
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    
-    Route::get('/test', function (Request $request) {
-        return response()->json([
-            'msg' => 'test'
-        ], 200);
-    });
+    Route::post('/auth/logout', [AuthController::class, 'logOut']);
+
+    //Route::resource('group', GroupController::class);
+    Route::post('/group/create', [GroupController::class, 'createGroup']);
+
 });
 
 /*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
