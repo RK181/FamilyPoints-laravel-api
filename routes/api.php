@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,21 @@ use Illuminate\Validation\ValidationException;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+// AUTH
+Route::post('/auth/signup', [AuthController::class, 'SignUp']);
+Route::post('/auth/login', [AuthController::class, 'LogIn']);
+
+// PROTECTED
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    
+    Route::get('/test', function (Request $request) {
+        return response()->json([
+            'msg' => 'test'
+        ], 200);
+    });
+});
+
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -25,7 +40,7 @@ Route::post('/sanctum/token', function (Request $request) {
     $request->validate([
         'email' => 'required|email',
         'password' => 'required',
-        'device_name' => 'required',
+        //'device_name' => 'required',
     ]);
  
     $user = User::where('email', $request->email)->first();
@@ -36,5 +51,5 @@ Route::post('/sanctum/token', function (Request $request) {
         ]);
     }
  
-    return $user->createToken($request->device_name)->plainTextToken;
-});
+    return $user->createToken("asd")->plainTextToken;
+});*/
