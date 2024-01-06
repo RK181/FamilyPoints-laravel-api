@@ -14,7 +14,7 @@ class AuthController extends Controller
      * @param Request $request
      * @return Boolean 
      */
-    public function SignUp(Request $request)
+    public function signUp(Request $request)
     {
         try {
             $validateUser = Validator::make($request->all(), 
@@ -55,9 +55,9 @@ class AuthController extends Controller
     /**
      * LogIn
      * @param Request $request
-     * @return User
+     * @return User token
      */
-    public function LogIn(Request $request)
+    public function logIn(Request $request)
     {
         try {
             $validateUser = Validator::make($request->all(), 
@@ -87,6 +87,30 @@ class AuthController extends Controller
                 'status' => true,
                 'message' => 'Success, LogIn',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
+            ], 200);
+
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
+    }
+
+    /**
+     * LogOut
+     * @param Request $request
+     * @return Boolean
+     */
+    public function logOut(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $user->tokens()->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Success, LogOut'
             ], 200);
 
         } catch (\Throwable) {
