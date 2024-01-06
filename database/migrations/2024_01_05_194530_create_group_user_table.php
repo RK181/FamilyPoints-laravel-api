@@ -16,13 +16,13 @@ return new class extends Migration
             $table->timestamps();
 
             // RELATION GROUP
-            $table->foreignId('group_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('group_id')->unique()->constrained()->onUpdate('cascade')->onDelete('cascade');
 
             // RELACTION USERS
-            $table->foreignId('couple_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('couple_id')->unique()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
 
             // Clave compuesta 
-            $table->unique(['group_id', 'couple_id']);
+            //$table->unique(['group_id', 'couple_id']);
         });
     }
 
