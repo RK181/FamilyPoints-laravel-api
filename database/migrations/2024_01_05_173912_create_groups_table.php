@@ -17,7 +17,7 @@ return new class extends Migration
 
             // CAMPOS ANYADIDOS
             $table->string('name');
-            $table->string('point_name');
+            $table->string('points_name');
             $table->string('points_icon');
             $table->boolean('conf_t_approve')->default(true);
             $table->boolean('conf_t_validate')->default(true);
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('conf_r_valiadte')->default(true);
 
             // RELACTON TO USER CREATOR 1..1
-            $table->foreignId('creator_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('creator_id')->unique()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
 
         });
     }
