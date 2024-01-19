@@ -12,7 +12,6 @@ class AuthController extends Controller
     /**
      * Sign Up
      * @param Request $request
-     * @return Boolean 
      */
     public function signUp(Request $request)
     {
@@ -100,7 +99,6 @@ class AuthController extends Controller
     /**
      * LogOut
      * @param Request $request
-     * @return Boolean
      */
     public function logOut(Request $request)
     {
