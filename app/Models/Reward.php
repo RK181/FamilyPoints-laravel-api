@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Reward extends Model
 {
@@ -16,14 +17,16 @@ class Reward extends Model
     /**
      * Funcion User 1 - 0..* Rewards
      */
-    public function user() { 
+    public function user(): BelongsTo 
+    { 
         return $this->belongsTo(User::class); 
     }
 
     /**
      * Funcion Group 1 - 0..* Rewards
      */
-    public function group() { 
+    public function group(): BelongsTo
+    { 
         return $this->belongsTo(Group::class); 
     }
 }
