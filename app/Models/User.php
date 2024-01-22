@@ -69,19 +69,10 @@ class User extends Authenticatable
     /**
      * Funcion User 1 - 0..1 Group
      */
-    /*public function userGroup(): HasOne
-    { 
-        return $this->hasOne(Group::class, 'creator_id'); 
-    }*/
 
     /**
      * Funcion User 0..1 - 0..1 Group
      */
-   /* public function coupleGroup(): BelongsToMany
-    {
-        
-        return $this->belongsToMany(Group::class, 'group_user', 'couple_id'); 
-    }*/
 
     public function group(): HasOne
     {
