@@ -13,6 +13,16 @@ class Group extends Model
     use HasFactory;
 
     /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    /**
      * Funcion Group 1 - 0..* Tasks
      */
     public function tasks(): HasMany 
@@ -39,8 +49,8 @@ class Group extends Model
     /**
      * Funcion User 0..1 - 0..1 Group
      */
-    public function couple(): BelongsToMany
+    public function couple(): BelongsTo
     { 
-        return $this->belongsToMany(User::class, 'group_user', 'group_id','couple_id'); 
+        return $this->belongsTo(User::class, 'couple_id'); 
     }
 }
