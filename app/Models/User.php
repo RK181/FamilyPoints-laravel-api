@@ -34,6 +34,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
+        'updated_at',
+        'id',
+        'email_verified_at',
     ];
 
     /**
@@ -65,16 +69,26 @@ class User extends Authenticatable
     /**
      * Funcion User 1 - 0..1 Group
      */
-    public function userGroup(): HasOne
+    /*public function userGroup(): HasOne
     { 
         return $this->hasOne(Group::class, 'creator_id'); 
-    }
+    }*/
 
     /**
      * Funcion User 0..1 - 0..1 Group
      */
-    public function coupleGroup(): BelongsToMany
-    { 
+   /* public function coupleGroup(): BelongsToMany
+    {
+        
         return $this->belongsToMany(Group::class, 'group_user', 'couple_id'); 
+    }*/
+
+    public function group(): HasOne
+    {
+        $group = $this->hasOne(Group::class, 'creator_id')->withDefault();
+        if ($group != null) {
+            return $group;
+        }
+        return $this->hasOne(Group::class, 'couple_id')->withDefault();
     }
 }
