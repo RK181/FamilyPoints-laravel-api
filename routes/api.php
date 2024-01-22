@@ -30,6 +30,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Route::resource('group', GroupController::class);
     Route::post('/group/create', [GroupController::class, 'createGroup']);
+    Route::get('/group', [GroupController::class, 'readGroup']);
 
 });
 

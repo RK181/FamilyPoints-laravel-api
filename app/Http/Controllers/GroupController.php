@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -61,7 +62,32 @@ class GroupController extends Controller
 
     public function readGroup(Request $request)
     {
-        return '';
+        try {
+            // Get user 
+            $user = $request->user();
+            // Get group if exist
+            $group = $user->group;
+            // If not, responde with error
+            if ($group == null) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No group found'
+                ], 404);
+            }
+
+            $group->creator;
+            $group->couple;
+            return response()->json([
+                'status' => true,
+                'group' => $group
+            ], 200);
+            
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
     }
 
     public function updateGroup(Request $request)
