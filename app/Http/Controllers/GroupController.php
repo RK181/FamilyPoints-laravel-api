@@ -96,9 +96,7 @@ class GroupController extends Controller
         try{
             $validateUser = Validator::make($request->all(), 
             [
-                //'id' => 'required|exists:groups,id',
-                'couple_email' => 'email|exists:users,email',
-                //'rule' => Rule::prohibitedIf($request->user()->id),
+                'couple.email' => 'email|exists:users,email',
                 'points_name' => 'string',
                 'points_icon' => 'string',
                 'conf_t_approve' => 'boolean',
@@ -125,8 +123,11 @@ class GroupController extends Controller
                 ], 404);
             }
             
-            if ($request->couple_email != null && $group->couple_id == null) {
-                $group->couple_id = User::where('email', $request->couple_email)->first()->id;         
+            if ($request->couple['email'] != null && $group->couple_id == null) {
+                $couple_id = User::select('id')->where('email', $request->couple['email'])->first()->id;  
+                if ($user->id != $couple_id) {
+                    $group->couple_id = $couple_id;
+                }  
             }
             if ($request->name != null) {
                 $group->name = $request->name;
