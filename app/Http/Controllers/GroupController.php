@@ -60,7 +60,7 @@ class GroupController extends Controller
         }
     }
 
-    public function readGroup(Request $request)
+    public function getGroup(Request $request)
     {
         try {
             // Get user 
