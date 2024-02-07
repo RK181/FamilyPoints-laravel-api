@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\RewardController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -31,7 +32,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Route::resource('group', GroupController::class);
     Route::post('/group/create', [GroupController::class, 'createGroup']);
     Route::put('/group/update', [GroupController::class, 'updateGroup']);
-    Route::get('/group', [GroupController::class, 'readGroup']);
+    Route::delete('/group/delete', [GroupController::class, 'deleteGroup']);
+    Route::get('/group', [GroupController::class, 'getGroup']);
+
+
+    Route::post('/reward/create', [RewardController::class, 'createReward']);
+    Route::put('/reward/update', [RewardController::class, 'updateReward']);
+    Route::get('/reward/{id}', [RewardController::class, 'getReward'])->whereNumber('id');
+    Route::delete('/reward/delete/{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
 
 });
 
