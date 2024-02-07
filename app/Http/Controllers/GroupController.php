@@ -67,7 +67,7 @@ class GroupController extends Controller
             $user = $request->user();
             // Get group if exist
             $group = $user->group;
-            // If not, responde with error
+            // If not, error
             if ($group == null) {
                 return response()->json([
                     'status' => false,
@@ -167,6 +167,30 @@ class GroupController extends Controller
 
     public function deleteGroup(Request $request)
     {
-        return '';
+        try {
+            // Get user 
+            $user = $request->user();
+            // Get group if exist
+            $group = $user->group;
+            // If not, error
+            if ($group == null) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No group found'
+                ], 404);
+            }
+
+            $group->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Success, Deleted Group'
+            ], 200);
+            
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
     }
 }
