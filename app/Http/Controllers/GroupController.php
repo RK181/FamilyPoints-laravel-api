@@ -77,10 +77,7 @@ class GroupController extends Controller
 
             $group->creator;
             $group->couple;
-            return response()->json([
-                'status' => true,
-                'group' => $group
-            ], 200);
+            return response()->json($group, 200);
             
         } catch (\Throwable) {
             return response()->json([
