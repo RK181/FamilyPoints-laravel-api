@@ -18,10 +18,12 @@ class Reward extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
+        'group_id',
+        'user_id',
     ];
 
     protected $casts = [
-        'expite_at' => 'datetime:d/m/Y',
+        'expite_at' => 'date:d/m/Y',
     ];
 
     /**
