@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('cost');
             $table->boolean('redeem')->default(false);
             $table->boolean('validate')->default(false);
-            $table->dateTime('expire_at');
+            $table->date('expire_at');
 
 
             // RELACTON TO GROUP 1
