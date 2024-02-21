@@ -36,9 +36,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/group', [GroupController::class, 'getGroup']);
 
 
+    Route::get('/group/reward/list', [RewardController::class, 'getGroupRewardList']);
     Route::post('/reward/create', [RewardController::class, 'createReward']);
     Route::put('/reward/update', [RewardController::class, 'updateReward']);
-    Route::get('/reward/{id}', [RewardController::class, 'getReward'])->whereNumber('id');
+    Route::get('/reward/{id}', [RewardController::class, 'getRewardById'])->whereNumber('id');
     Route::delete('/reward/delete/{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
 
 });
