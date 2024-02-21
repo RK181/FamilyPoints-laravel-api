@@ -68,7 +68,7 @@ class GroupController extends Controller
             // Get group if exist
             $group = $user->group;
             // If not, error
-            if ($group == null) {
+            if ($group->id == 0) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No group found'
@@ -113,7 +113,7 @@ class GroupController extends Controller
             $user = $request->user();
             $group = $user->group;
             // TO-DO -> Mover la comprobacion a un Middleware
-            if ($group->id == null) {
+            if ($group->id == 0) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No group found'
@@ -171,7 +171,7 @@ class GroupController extends Controller
             // Get group if exist
             $group = $user->group;
             // If not, error
-            if ($group == null) {
+            if ($group->id == 0) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No group found'
