@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reward;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class RewardController extends Controller
@@ -16,7 +18,7 @@ class RewardController extends Controller
                 'title' => 'required|string',
                 'description' => 'required|string',
                 'cost' => 'required|integer',
-                'expire_at' => 'required|date|date_format:d/m/Y'
+                'expire_at' => 'required|date_format:d/m/Y'
             ]);
 
             if($validateUser->fails()){
@@ -29,8 +31,8 @@ class RewardController extends Controller
 
             $user = $request->user();
             $group = $user->group;
-
-            if ($group == null) {
+            // TO-DO
+            if ($group->id == 0) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Group not found'
@@ -43,7 +45,7 @@ class RewardController extends Controller
             $reward->title = $request->title;
             $reward->description = $request->description;
             $reward->cost = $request->cost;
-            $reward->expire_at = $request->expire_at;
+            $reward->expire_at = Carbon::createFromFormat('d/m/Y', $request->expire_at)->format('Y-m-d');
             $reward->save();
             
             return response()->json([
@@ -59,7 +61,7 @@ class RewardController extends Controller
         }
     }
 
-    public function getReward(Request $request, string $id)
+    public function getRewardById(Request $request, string $id)
     {
         try {
             // Get user 
@@ -67,7 +69,8 @@ class RewardController extends Controller
             // Get group if exist
             $group = $user->group;
             // If not, error
-            if ($group == null) {
+            // TO-DO
+            if ($group->id == 0) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No group found'
@@ -75,11 +78,41 @@ class RewardController extends Controller
             }
             
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
-            
+            $reward->user;
+
             return response()->json([
                 'status' => true,
                 'group' => $reward
             ], 200);
+            
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
+    }
+
+    public function getGroupRewardList(Request $request)
+    {
+        try {
+            // Get user 
+            $user = $request->user();
+            // Get group if exist
+            $group = $user->group;
+            // If not, error
+            // TO-DO
+            if ($group->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No group found'
+                ], 404);
+            }
+            
+            $rewards = $group->rewards()->with('user')->get();
+            //$rewards->user;
+
+            return response()->json($rewards, 200);
             
         } catch (\Throwable) {
             return response()->json([
@@ -114,7 +147,7 @@ class RewardController extends Controller
             $group = $user->group;
             $reward = null;
             // TO-DO -> Mover la comprobacion a un Middleware
-            if ($group->id == null) {
+            if ($group->id == 0) {
                 $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
                 if ($reward == null) {
                     return response()->json([
@@ -134,7 +167,7 @@ class RewardController extends Controller
                 $reward->cost = $request->cost;                     
             }
             if ($request->expire_at != null) {
-                $reward->expire_at = $request->expire_at;                     
+                $reward->expire_at = Carbon::parse($request->expire_at)->format('Y-m-d');                     
             }
 
             $reward->save();
@@ -159,12 +192,11 @@ class RewardController extends Controller
             $user = $request->user();
             // Get group if exist
             $group = $user->group;
-            $reward = null;
             // If not, error
             // TO-DO
-            if ($group->id == null) {
+            if ($group->id == 0) {
                 $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
-                if ($reward == null) {
+                if ($reward->id == 0) {
                     return response()->json([
                         'status' => false,
                         'message' => 'No group found'
@@ -172,7 +204,9 @@ class RewardController extends Controller
                 }
             }
 
+            $reward = Reward::where('id', $id)->first();
             $reward->delete();
+
             return response()->json([
                 'status' => true,
                 'message' => 'Success, Deleted Reward'
