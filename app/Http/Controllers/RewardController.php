@@ -78,6 +78,15 @@ class RewardController extends Controller
             }
             
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
+            // If not, error
+            // TO-DO
+            if ($reward->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No reward found'
+                ], 404);
+            }
+
             $reward->user;
 
             return response()->json([
@@ -145,16 +154,20 @@ class RewardController extends Controller
 
             $user = $request->user();
             $group = $user->group;
-            $reward = null;
             // TO-DO -> Mover la comprobacion a un Middleware
             if ($group->id == 0) {
-                $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
-                if ($reward == null) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'No group found'
-                    ], 404);
-                }
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No group found'
+                ], 404);
+            }
+
+            $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
+            if ($reward->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No reward found'
+                ], 404);
             }
             
             if ($request->title != null) {
@@ -185,6 +198,132 @@ class RewardController extends Controller
         }
     }
 
+    // Protected Authorization required
+    public function updateRewardRedeem(Request $request)
+    {
+        try{
+            $validateUser = Validator::make($request->all(), 
+            [
+                'id' => 'required|integer|exists:rewards,id'
+            ]);
+
+            if($validateUser->fails()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'BadRequest',
+                    'errors' => $validateUser->errors()
+                ], 400);
+            }
+
+            $user = $request->user();
+            $group = $user->group;
+            // TO-DO -> Mover la comprobacion a un Middleware
+            if ($group->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No group found'
+                ], 404);
+            }
+
+            $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
+            // TO-DO -> Mover la comprobacion a un Middleware
+            if ($reward->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No reward found'
+                ], 404);
+            }
+
+           if ($reward->user_id != $user->id) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Forbidden'
+                ], 403);
+            }
+
+            if ($reward->validate && $reward->redeem == false) {
+                $user->points = $user->points - $reward->cost;
+                $user->save();
+
+                $reward->redeem = true;
+                $reward->save();
+            }
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Success, Redeem Reward'
+            ], 200);
+
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
+    }
+
+    // Protected Authorization required
+    public function updateRewardValidate(Request $request)
+    {
+        try{
+            $validateUser = Validator::make($request->all(), 
+            [
+                'id' => 'required|integer|exists:rewards,id'
+            ]);
+
+            if($validateUser->fails()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'BadRequest',
+                    'errors' => $validateUser->errors()
+                ], 400);
+            }
+
+            $user = $request->user();
+            $group = $user->group;
+            // TO-DO -> Mover la comprobacion a un Middleware
+            if ($group->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No group found'
+                ], 404);
+            }
+
+            $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
+            // TO-DO -> Mover la comprobacion a un Middleware
+            if ($reward->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No reward found'
+                ], 404);
+            }
+
+           if ($reward->user_id != $user->id) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Forbidden'
+                ], 403);
+            }
+
+            if ($reward->validate == false) {
+
+                $reward->validate = true;
+                $reward->save();
+            }
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Success, Updated Reward'
+            ], 200);
+
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
+    }
+
     public function deleteReward(Request $request, string $id)
     {
         try {
@@ -195,16 +334,20 @@ class RewardController extends Controller
             // If not, error
             // TO-DO
             if ($group->id == 0) {
-                $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
-                if ($reward->id == 0) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'No group found'
-                    ], 404);
-                }
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No group found'
+                ], 404);
+            }
+            // TO-DO
+            $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
+            if ($reward->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No reward found'
+                ], 404);
             }
 
-            $reward = Reward::where('id', $id)->first();
             $reward->delete();
 
             return response()->json([
