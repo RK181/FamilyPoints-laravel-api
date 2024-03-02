@@ -38,6 +38,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/group', [GroupController::class, 'getGroup']);
         
         Route::group(['middleware' => ['RewardInGroupExist']], function () {
+
+            Route::patch('/reward/redeem', [RewardController::class, 'updateRewardRedeem']);
+            Route::patch('/reward/validate', [RewardController::class, 'updateRewardValidate']);
+
             Route::get('/group/reward/list', [RewardController::class, 'getGroupRewardList']);
             Route::post('/reward/create', [RewardController::class, 'createReward']);
             Route::put('/reward/update', [RewardController::class, 'updateReward']);
