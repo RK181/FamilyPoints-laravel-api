@@ -298,7 +298,7 @@ class RewardController extends Controller
                 ], 404);
             }
 
-           if ($reward->user_id != $user->id) {
+           if ($reward->user_id == $user->id) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Forbidden'
@@ -313,7 +313,7 @@ class RewardController extends Controller
             
             return response()->json([
                 'status' => true,
-                'message' => 'Success, Updated Reward'
+                'message' => 'Success, Validate Reward'
             ], 200);
 
         } catch (\Throwable) {
