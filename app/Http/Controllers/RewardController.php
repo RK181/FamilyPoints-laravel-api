@@ -198,7 +198,7 @@ class RewardController extends Controller
         }
     }
 
-    // Protected Authorization required
+    // Pedir o canjear la recompensa
     public function updateRewardRedeem(Request $request)
     {
         try{
@@ -240,11 +240,14 @@ class RewardController extends Controller
                     'message' => 'Forbidden'
                 ], 403);
             }
-
-            if ($reward->validate && $reward->redeem == false) {
-                $user->points = $user->points - $reward->cost;
-                $user->save();
-
+            
+            if ($reward->redeem == false) {
+                // Si para canjear la recompensa no es necesario validar el canjeo a posteriori
+                if ($group->conf_r_valiadte == false) {
+                    $user->points = $user->points - $reward->cost;
+                    $user->save();
+                }
+                
                 $reward->redeem = true;
                 $reward->save();
             }
@@ -262,7 +265,7 @@ class RewardController extends Controller
         }
     }
 
-    // Protected Authorization required
+    // Validar el canjeo de la recompensa
     public function updateRewardValidate(Request $request)
     {
         try{
@@ -305,8 +308,12 @@ class RewardController extends Controller
                 ], 403);
             }
 
-            if ($reward->validate == false) {
-
+            if ($reward->validate == false && $reward->redeem) {
+                if ($group->conf_r_valiadte) {
+                    $couple = $reward->user;
+                    $couple->points = $couple->points - $reward->cost;
+                    $couple->save();
+                }
                 $reward->validate = true;
                 $reward->save();
             }
