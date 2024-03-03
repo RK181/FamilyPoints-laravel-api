@@ -31,13 +31,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/group/create', [GroupController::class, 'createGroup']);
 
     //Route::resource('group', GroupController::class);
-    Route::group(['middleware' => ['GroupExist']], function () {
+    Route::group(['middleware' => ['groupExist']], function () {
         
         Route::put('/group/update', [GroupController::class, 'updateGroup']);
         Route::delete('/group/delete', [GroupController::class, 'deleteGroup']);
         Route::get('/group', [GroupController::class, 'getGroup']);
         
-        Route::group(['middleware' => ['RewardInGroupExist']], function () {
+        Route::group(['middleware' => ['rewardInGroupExist']], function () {
 
             Route::patch('/reward/redeem', [RewardController::class, 'updateRewardRedeem']);
             Route::patch('/reward/validate', [RewardController::class, 'updateRewardValidate']);
