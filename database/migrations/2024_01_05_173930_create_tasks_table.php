@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('complete')->default(false);
             $table->boolean('approve')->default(false);
             $table->boolean('validate')->default(false);
-            $table->dateTime('expire_at');
+            $table->date('expire_at');
 
             // RELACTON TO GROUP 1
             $table->foreignId('group_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
