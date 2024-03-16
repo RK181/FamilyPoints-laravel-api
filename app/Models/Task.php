@@ -18,6 +18,7 @@ class Task extends Model
     protected $hidden = [
         'created_at',
         'updated_at',
+        'creator_id',
     ];
 
     protected $casts = [
@@ -31,6 +32,11 @@ class Task extends Model
     public function user(): BelongsTo
     { 
         return $this->belongsTo(User::class)->withDefault(); 
+    }
+
+    public function creator(): BelongsTo
+    { 
+        return $this->belongsTo(User::class, 'creator_id'); 
     }
 
     /**
