@@ -89,10 +89,7 @@ class RewardController extends Controller
 
             $reward->user;
 
-            return response()->json([
-                'status' => true,
-                'group' => $reward
-            ], 200);
+            return response()->json($reward, 200);
             
         } catch (\Throwable) {
             return response()->json([
