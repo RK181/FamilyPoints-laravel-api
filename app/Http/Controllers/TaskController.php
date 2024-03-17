@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
@@ -109,7 +110,7 @@ class TaskController extends Controller
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $request->id)->where('group_id', $group->id)->first();
-            if ($task->id != 0) {
+            if ($task->id == 0) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
@@ -121,64 +122,6 @@ class TaskController extends Controller
             $task->reward = $request->reward;
             $task->expire_at = Carbon::createFromFormat('d/m/Y', $request->expire_at)->format('Y-m-d');
             $task->save();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Success, Updated Task'
-            ], 200);
-
-        } catch (\Throwable) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Server error'
-            ], 500);
-        }
-    }
-
-    /**
-     * Update task completion status, by User who complited the task. Need to wait for validation(if configured) to receive the reward.
-     *
-     * This method updates the completion status of a task with the provided ID. The request must include the following parameters:
-     * - id (param): The task ID.
-     *
-     * @param \Illuminate\Http\Request $request The request object.
-     * @param string $id The ID of the task to update.
-     * @return \Illuminate\Http\JsonResponse The JSON response containing the status and message.
-     */
-    public function updateTaskComplete(Request $request, string $id)
-    {
-        try {
-            $user = $request->user();
-            $group = $user->group;
-            $task = Task::where('id', $id)->where('group_id', $group->id)->first();
-            if ($task->id != 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Task not found'
-                ], 404);
-            }
-
-            if ($task->complete == false && ($task->approve == true || $group->conf_t_approve == false)){
-                // If dont need to wait for validation
-                if ($group->conf_t_validate == false) {
-                    $task->validate = true;
-                    $task->user_id->points = $user->points + $task->reward;
-                }
-                // If dont need to wait for approval
-                if ($group->conf_t_approve == false) {
-                    $task->approve = true;
-                }
-
-
-                $task->user_id = $user->id;
-                $task->complete = true;
-                $task->save();
-            }
-
-            /*if ($task->complete == true && $task->validate == false && $group->conf_t_validate == true){
-                $task->validate = true;
-                $task->save();
-            }*/
 
             return response()->json([
                 'status' => true,
@@ -208,24 +151,88 @@ class TaskController extends Controller
         try {
             $user = $request->user();
             $group = $user->group;
-            $task = Task::where('id', $id)->where('group_id', $group->id)->first();
-            if ($task->id != 0) {
+            $task = Task::where('id', $id)->where('group_id', $group->id)->where('user_id', null)->first();
+            if ($task->id == 0) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
                 ], 404);
             }
 
-            if($user->id == $task->creator_id){
+            if($user->id == $task->creator_id && $group->conf_t_approve){
                 return response()->json([
                     'status' => false,
                     'message' => 'User not allowed'
                 ], 400);
             }
 
-            if ($task->approve == false && (($user->id != $task->creator_id && $group->conf_t_approve) || $group->conf_t_approve == false)){
+            //if ($task->approve == false && (($user->id != $task->creator_id && $group->conf_t_approve) || $group->conf_t_approve == false)){
+            if ($task->approve == false){
                 $task->approve = true;
                 $task->save();
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Success, Updated Task'
+            ], 200);
+
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
+    }
+
+    /**
+     * Update task completion status, by User who complited the task. Need to wait for validation(if configured) to receive the reward.
+     *
+     * This method updates the completion status of a task with the provided ID. The request must include the following parameters:
+     * - id (param): The task ID.
+     *
+     * @param \Illuminate\Http\Request $request The request object.
+     * @param string $id The ID of the task to update.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing the status and message.
+     */
+    public function updateTaskComplete(Request $request, string $id)
+    {
+        try {
+            $user = $request->user();
+            $group = $user->group;
+            $task = Task::where('id', $id)->where('group_id', $group->id)->where('user_id', null)->first();
+            if ($task->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Task not found'
+                ], 404);
+            }
+
+            if($task->approve == false && $group->conf_t_approve){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not allowed'
+                ], 400);
+            }
+
+            if ($task->complete == false){
+                DB::transaction(function () use ($task, $user, $group) {
+                    // If dont need to wait for validation
+                    if ($group->conf_t_validate == false) {
+                        $task->validate = true;
+
+                        $user->points = $user->points + $task->reward;
+                        $user->save();
+                    }
+                    // If dont need to wait for approval
+                    if ($group->conf_t_approve == false) {
+                        $task->approve = true;
+                    }
+
+                    $task->user_id = $user->id;
+                    $task->complete = true;
+                    $task->save();
+                });
             }
 
             return response()->json([
@@ -257,27 +264,76 @@ class TaskController extends Controller
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
-            if ($task->id != 0) {
+            if ($task->id == 0) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
                 ], 404);
             }
 
-            if($user->id == $task->creator_id){
+            if($task->complete == false || ($user->id == $task->user_id && $group->conf_t_validate)){
                 return response()->json([
                     'status' => false,
                     'message' => 'User not allowed'
                 ], 400);
             }
 
-            if ($task->validate == false && 
-                $task->approve && $task->complete &&
-                (($user->id != $task->user_id && $group->conf_t_validate) || $group->conf_t_validate == false))
-            {
-                $task->validate = true;
-                $task->user_id->points = $user->points + $task->reward;
-                $task->save();
+            if ($task->validate == false){
+                DB::transaction(function () use ($task) {
+                    $task_user = $task->user;
+                    $task_user->points = $task_user->points + $task->reward;
+                    $task_user->save();
+    
+                    $task->validate = true;
+                    $task->save();
+                });
+            }
+            
+            return response()->json([
+                'status' => true,
+                'message' => 'Success, Updated Task'
+            ], 200);
+
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
+    }
+
+    public function updateTaskCompletionInValidation(Request $request, string $id)
+    {
+        try {
+            $user = $request->user();
+            $group = $user->group;
+            $task = Task::where('id', $id)->where('group_id', $group->id)->first();
+            if ($task->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Task not found'
+                ], 404);
+            }
+
+            if($group->conf_t_invalidate == false || $task->validate == false || $user->id == $task->user_id){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not allowed'
+                ], 400);
+            }
+
+            if ($task->validate){
+                DB::transaction(function () use ($task) {
+                    $task->validate = false;
+                    $task->complete = false;
+
+                    $task_user = $task->user;
+                    $task_user->points = $task_user->points - $task->reward;
+                    $task_user->save();
+
+                    $task->user_id = null;
+                    $task->save();
+                }); 
             }
 
             return response()->json([
@@ -293,7 +349,32 @@ class TaskController extends Controller
         }
     }
 
-    
+    public function getTaskById(Request $request, string $id)
+    {
+        try {
+            $user = $request->user();
+            $group = $user->group;
+            $task = Task::where('id', $id)->where('group_id', $group->id)->first();
+            if ($task->id == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Task not found'
+                ], 404);
+            }
+
+            $task->creator;
+            $task->user;
+
+            return response()->json($task, 200);
+            
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
+    }
+
     public function getGroupTaskList(Request $request)
     {
         try {
@@ -330,7 +411,7 @@ class TaskController extends Controller
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
-            if ($task->id != 0) {
+            if ($task->id == 0) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
