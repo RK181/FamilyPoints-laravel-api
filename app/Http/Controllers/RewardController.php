@@ -80,7 +80,7 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             // If not, error
             // TO-DO
-            if ($reward->id == 0) {
+            if ($reward == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No reward found'
@@ -160,7 +160,7 @@ class RewardController extends Controller
             }
 
             $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
-            if ($reward->id == 0) {
+            if ($reward == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No reward found'
@@ -224,7 +224,7 @@ class RewardController extends Controller
 
             $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
             // TO-DO -> Mover la comprobacion a un Middleware
-            if ($reward->id == 0) {
+            if ($reward == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No reward found'
@@ -291,7 +291,7 @@ class RewardController extends Controller
 
             $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
             // TO-DO -> Mover la comprobacion a un Middleware
-            if ($reward->id == 0) {
+            if ($reward == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No reward found'
@@ -345,7 +345,7 @@ class RewardController extends Controller
             }
             // TO-DO
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
-            if ($reward->id == 0) {
+            if ($reward == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'No reward found'
