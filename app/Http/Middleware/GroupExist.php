@@ -15,10 +15,7 @@ class GroupExist
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
-        $group = $user->group;
-        //$request->user()->group->exists())
-        if ($group->id == 0) {
+        if (!$request->user()->group->exists()) {
             return response()->json([
                 'status' => false,
                 'message' => 'No group found'
