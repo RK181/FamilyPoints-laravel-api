@@ -38,17 +38,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/group/delete', [GroupController::class, 'deleteGroup']);
         Route::get('/group', [GroupController::class, 'getGroup']);
         
-        Route::group(['middleware' => ['rewardInGroupExist']], function () {
+        //Route::group(['middleware' => ['rewardInGroupExist']], function () {
 
-            Route::patch('/reward/redeem', [RewardController::class, 'updateRewardRedeem']);
-            Route::patch('/reward/validate', [RewardController::class, 'updateRewardValidate']);
+            Route::patch('/reward/redeem/{id}', [RewardController::class, 'updateRewardRedeem'])->whereNumber('id');
+            Route::patch('/reward/validate/{id}', [RewardController::class, 'updateRewardValidate'])->whereNumber('id');
 
             Route::get('/group/reward/list', [RewardController::class, 'getGroupRewardList']);
             Route::post('/reward/create', [RewardController::class, 'createReward']);
             Route::put('/reward/update', [RewardController::class, 'updateReward']);
             Route::get('/reward/{id}', [RewardController::class, 'getRewardById'])->whereNumber('id');
             Route::delete('/reward/delete/{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
-        });
+        //});
 
 
         Route::patch('/task/approve/{id}', [TaskController::class, 'updateTaskCreationApprove'])->whereNumber('id');

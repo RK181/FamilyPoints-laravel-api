@@ -31,13 +31,6 @@ class RewardController extends Controller
 
             $user = $request->user();
             $group = $user->group;
-            // TO-DO
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Group not found'
-                ], 404);
-            }
 
             $reward = new Reward();
             $reward->user_id = $user->id;
@@ -68,18 +61,8 @@ class RewardController extends Controller
             $user = $request->user();
             // Get group if exist
             $group = $user->group;
-            // If not, error
-            // TO-DO
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No group found'
-                ], 404);
-            }
             
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
-            // If not, error
-            // TO-DO
             if ($reward == null) {
                 return response()->json([
                     'status' => false,
@@ -102,18 +85,8 @@ class RewardController extends Controller
     public function getGroupRewardList(Request $request)
     {
         try {
-            // Get user 
             $user = $request->user();
-            // Get group if exist
             $group = $user->group;
-            // If not, error
-            // TO-DO
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No group found'
-                ], 404);
-            }
             
             $rewards = $group->rewards()->with('user')->get();
             //$rewards->user;
@@ -151,13 +124,6 @@ class RewardController extends Controller
 
             $user = $request->user();
             $group = $user->group;
-            // TO-DO -> Mover la comprobacion a un Middleware
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No group found'
-                ], 404);
-            }
 
             $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
             if ($reward == null) {
@@ -196,34 +162,13 @@ class RewardController extends Controller
     }
 
     // Pedir o canjear la recompensa
-    public function updateRewardRedeem(Request $request)
+    public function updateRewardRedeem(Request $request, string $id)
     {
         try{
-            $validateUser = Validator::make($request->all(), 
-            [
-                'id' => 'required|integer|exists:rewards,id'
-            ]);
-
-            if($validateUser->fails()){
-                return response()->json([
-                    'status' => false,
-                    'message' => 'BadRequest',
-                    'errors' => $validateUser->errors()
-                ], 400);
-            }
-
             $user = $request->user();
             $group = $user->group;
-            // TO-DO -> Mover la comprobacion a un Middleware
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No group found'
-                ], 404);
-            }
 
             $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
-            // TO-DO -> Mover la comprobacion a un Middleware
             if ($reward == null) {
                 return response()->json([
                     'status' => false,
@@ -263,34 +208,13 @@ class RewardController extends Controller
     }
 
     // Validar el canjeo de la recompensa
-    public function updateRewardValidate(Request $request)
+    public function updateRewardValidate(Request $request, string $id)
     {
         try{
-            $validateUser = Validator::make($request->all(), 
-            [
-                'id' => 'required|integer|exists:rewards,id'
-            ]);
-
-            if($validateUser->fails()){
-                return response()->json([
-                    'status' => false,
-                    'message' => 'BadRequest',
-                    'errors' => $validateUser->errors()
-                ], 400);
-            }
-
             $user = $request->user();
             $group = $user->group;
-            // TO-DO -> Mover la comprobacion a un Middleware
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No group found'
-                ], 404);
-            }
 
-            $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
-            // TO-DO -> Mover la comprobacion a un Middleware
+            $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
                     'status' => false,
@@ -335,15 +259,7 @@ class RewardController extends Controller
             $user = $request->user();
             // Get group if exist
             $group = $user->group;
-            // If not, error
-            // TO-DO
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No group found'
-                ], 404);
-            }
-            // TO-DO
+            
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
