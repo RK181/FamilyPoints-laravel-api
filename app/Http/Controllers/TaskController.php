@@ -43,14 +43,6 @@ class TaskController extends Controller
 
             $user = $request->user();
             $group = $user->group;
-            /* TO-DO
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Group not found'
-                ], 404);
-            }
-            */
 
             $task = new Task();
             $task->creator_id = $user->id; 
@@ -110,7 +102,7 @@ class TaskController extends Controller
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $request->id)->where('group_id', $group->id)->first();
-            if ($task->id == 0) {
+            if ($task == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
@@ -152,7 +144,7 @@ class TaskController extends Controller
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $id)->where('group_id', $group->id)->where('user_id', null)->first();
-            if ($task->id == 0) {
+            if ($task == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
@@ -163,7 +155,7 @@ class TaskController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'User not allowed'
-                ], 400);
+                ], 403);
             }
 
             //if ($task->approve == false && (($user->id != $task->creator_id && $group->conf_t_approve) || $group->conf_t_approve == false)){
@@ -198,10 +190,24 @@ class TaskController extends Controller
     public function updateTaskComplete(Request $request, string $id)
     {
         try {
+            /*$request['id'] = $id;
+            $validateUser = Validator::make($request->all(), 
+            [
+                'id' => 'required|integer|exists:tasks,id'
+            ]);
+
+            if($validateUser->fails()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'BadRequest',
+                    'errors' => $validateUser->errors()
+                ], 400);
+            }*/
+
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $id)->where('group_id', $group->id)->where('user_id', null)->first();
-            if ($task->id == 0) {
+            if ($task == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
@@ -212,7 +218,7 @@ class TaskController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'User not allowed'
-                ], 400);
+                ], 403);
             }
 
             if ($task->complete == false){
@@ -264,7 +270,7 @@ class TaskController extends Controller
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
-            if ($task->id == 0) {
+            if ($task == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
@@ -275,7 +281,7 @@ class TaskController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'User not allowed'
-                ], 400);
+                ], 403);
             }
 
             if ($task->validate == false){
@@ -308,7 +314,7 @@ class TaskController extends Controller
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
-            if ($task->id == 0) {
+            if ($task == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
@@ -319,7 +325,7 @@ class TaskController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'User not allowed'
-                ], 400);
+                ], 403);
             }
 
             if ($task->validate){
@@ -355,7 +361,7 @@ class TaskController extends Controller
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
-            if ($task->id == 0) {
+            if ($task == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
@@ -378,21 +384,11 @@ class TaskController extends Controller
     public function getGroupTaskList(Request $request)
     {
         try {
-            // Get user 
             $user = $request->user();
-            // Get group if exist
             $group = $user->group;
-            // If not, error
-            /* TO-DO
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No group found'
-                ], 404);
-            }
-            */
+
             // Get all tasks from group
-            $tasks = $group->tasks()->with('creator')->get();
+            $tasks = $group->tasks()->with('creator')->with('user')->get();
 
             return response()->json($tasks, 200);
             
@@ -411,7 +407,7 @@ class TaskController extends Controller
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
-            if ($task->id == 0) {
+            if ($task == null) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Task not found'
