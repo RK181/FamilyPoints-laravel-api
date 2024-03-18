@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\RewardController;
+use App\Http\Controllers\TaskController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -48,6 +49,20 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
             Route::get('/reward/{id}', [RewardController::class, 'getRewardById'])->whereNumber('id');
             Route::delete('/reward/delete/{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
         });
+
+
+        Route::patch('/task/approve/{id}', [TaskController::class, 'updateTaskCreationApprove'])->whereNumber('id');
+        Route::patch('/task/complete/{id}', [TaskController::class, 'updateTaskComplete'])->whereNumber('id');
+        Route::patch('/task/validate/{id}', [TaskController::class, 'updateTaskCompletionValidation'])->whereNumber('id');
+        Route::patch('/task/invalidate/{id}', [TaskController::class, 'updateTaskCompletionInValidation'])->whereNumber('id');
+
+
+        Route::post('/task/create', [TaskController::class, 'createTask']);
+        Route::put('/task/update', [TaskController::class, 'updateTask']);
+        Route::get('/task/{id}', [TaskController::class, 'getTaskById'])->whereNumber('id');
+        Route::delete('/task/delete/{id}', [TaskController::class, 'deleteTask'])->whereNumber('id');
+        Route::get('/group/task/list', [TaskController::class, 'getGroupTaskList']);
+
     });
 });
 
