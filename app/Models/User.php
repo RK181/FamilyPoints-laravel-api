@@ -77,7 +77,7 @@ class User extends Authenticatable
     public function group(): HasOne
     {
         $group = $this->hasOne(Group::class, 'creator_id')->withDefault();
-        if ($group != null) {
+        if ($group->exists()) {
             return $group;
         }
         return $this->hasOne(Group::class, 'couple_id')->withDefault();
