@@ -22,7 +22,7 @@ class Task extends Model
     ];
 
     protected $casts = [
-        'expite_at' => 'datetime:d/m/Y',
+        'expite_at' => 'date:d/m/Y',
     ];
 
     /**
