@@ -112,15 +112,8 @@ class GroupController extends Controller
 
             $user = $request->user();
             $group = $user->group;
-            // TO-DO -> Mover la comprobacion a un Middleware
-            if ($group->id == 0) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No group found'
-                ], 404);
-            }
             
-            if ($request->couple['email'] != null && $group->couple_id == null) {
+            if ($group->couple_id == null && $request->couple['email'] != null) {
                 $couple_id = User::select('id')->where('email', $request->couple['email'])->first()->id;  
                 if ($user->id != $couple_id) {
                     $group->couple_id = $couple_id;
