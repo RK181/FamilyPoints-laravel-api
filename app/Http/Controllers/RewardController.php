@@ -186,10 +186,12 @@ class RewardController extends Controller
             if ($reward->redeem == false) {
                 // Si para canjear la recompensa no es necesario validar el canjeo a posteriori
                 if ($group->conf_r_valiadte == false) {
-                    $user->points = $user->points - $reward->cost;
-                    $user->save();
+                    $couple = $reward->user;
+                    $couple->points = $couple->points - $reward->cost;
+                    $couple->save();
+
+                    $reward->validate = true;
                 }
-                
                 $reward->redeem = true;
                 $reward->save();
             }
@@ -222,7 +224,7 @@ class RewardController extends Controller
                 ], 404);
             }
 
-           if ($reward->user_id == $user->id) {
+           if ($reward->user_id == $user->id && $group->conf_r_valiadte) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Forbidden'
@@ -230,11 +232,10 @@ class RewardController extends Controller
             }
 
             if ($reward->validate == false && $reward->redeem) {
-                if ($group->conf_r_valiadte) {
-                    $couple = $reward->user;
-                    $couple->points = $couple->points - $reward->cost;
-                    $couple->save();
-                }
+                $couple = $reward->user;
+                $couple->points = $couple->points - $reward->cost;
+                $couple->save();
+
                 $reward->validate = true;
                 $reward->save();
             }
