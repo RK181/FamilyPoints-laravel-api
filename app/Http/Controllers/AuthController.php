@@ -40,7 +40,6 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Success, SignUp'
-                //'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
 
         } catch (\Throwable) {
