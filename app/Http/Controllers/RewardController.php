@@ -133,16 +133,16 @@ class RewardController extends Controller
                 ], 404);
             }
             
-            if ($request->title != null) {
+            if ($request->has('title')) {
                 $reward->title = $request->title;
             }
-            if ($request->description != null) {
+            if ($request->has('description')) {
                 $reward->description = $request->description;                      
             }
-            if ($request->cost != null) {
+            if ($request->has('cost')) {
                 $reward->cost = $request->cost;                     
             }
-            if ($request->expire_at != null) {
+            if ($request->has('expire_at')) {
                 $reward->expire_at = Carbon::parse($request->expire_at)->format('Y-m-d');                     
             }
 
