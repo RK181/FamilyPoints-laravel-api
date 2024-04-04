@@ -119,28 +119,28 @@ class GroupController extends Controller
                     $group->couple_id = $couple_id;
                 }  
             }
-            if ($request->name != null) {
+            if ($request->has('name')) {
                 $group->name = $request->name;
             }
-            if ($request->points_name != null) {
+            if ($request->has('points_name')) {
                 $group->points_name = $request->points_name;                      
             }
-            if ($request->points_icon != null) {
+            if ($request->has('points_icon')){
                 $group->points_icon = $request->points_icon;                     
             }
-            if ($request->conf_t_approve != null) {
+            if ($request->has('conf_t_approve')) {
                 $group->conf_t_approve = $request->conf_t_approve;                     
             }
-            if ($request->conf_t_validate != null) {
+            if ($request->has('conf_t_validate')) {
                 $group->conf_t_validate = $request->conf_t_validate;                   
             }
-            if ($request->conf_t_invalidate != null) {
+            if ($request->has('conf_t_invalidate')) {
                 $group->conf_t_invalidate = $request->conf_t_invalidate;          
             }
-            if ($request->conf_r_valiadte != null) {
+            if ($request->has('conf_r_valiadte')){
                 $group->conf_r_valiadte = $request->conf_r_valiadte;
             }
-
+            
             $group->save();
             
             return response()->json([
