@@ -117,7 +117,17 @@ class GroupController extends Controller
                 $couple_id = User::select('id')->where('email', $request->couple['email'])->first()->id;  
                 if ($user->id != $couple_id) {
                     $group->couple_id = $couple_id;
-                }  
+                } else {
+                    $validateUser->errors()->add(
+                        'couple.email',
+                        'Couple can not be the same as creator'
+                    );
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'BadRequest',
+                        'errors' => $validateUser->errors()
+                    ], 400);
+                }
             }
             if ($request->has('name')) {
                 $group->name = $request->name;
