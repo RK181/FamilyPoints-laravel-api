@@ -29,7 +29,7 @@ return new class extends Migration
 
             // RELACTON TO USER 0..1
             $table->foreignId('user_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('creator_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('creator_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
 
         });
     }
