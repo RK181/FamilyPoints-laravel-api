@@ -126,18 +126,26 @@ class AuthController extends Controller
     }
 
     /**
-     * Verify Email
+     * Verify Email Loading Pago
      * @param string $id
      */
     public function verifyEmail(string $id) {
-        // obtenemos el usuario
-        $user = User::findOrFail($id);
-        // verificamos si el usuario ya ha verificado su email
-        if (!$user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
+        try {
+            // obtenemos el usuario
+            $user = User::findOrFail($id);
+            // verificamos si el usuario ya ha verificado su email
+            if (!$user->hasVerifiedEmail()) {
+                $user->markEmailAsVerified();
+            }
+
+            return view('status')->with([
+                'header' => 'Email verification',
+                'message' => 'Email verified successfully'
+            ]); 
+
+        } catch (\Throwable) {
+            return abort(500, 'Server error: algo ha ido mal intentalo mas tarde');
         }
-    
-        return redirect()->to('/');
     }
     
     /**
