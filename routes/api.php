@@ -21,50 +21,43 @@ use Illuminate\Validation\ValidationException;
 |
 */
 
-/*
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-->middleware(['signed'])->name('verification.verify')->whereNumber('id');
-*/
-
 //
 
 // AUTH
 Route::post('/auth/signup', [AuthController::class, 'signUp']);
 Route::post('/auth/login', [AuthController::class, 'logIn']);
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-->middleware(['signed'])->name('verification.verify')->whereNumber('id');
 
 // PROTECTED
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // AUTH
     Route::post('/auth/logout', [AuthController::class, 'logOut']);
-    Route::get('/email/resend', [AuthController::class, 'resendVerifyEmail'])->name('verification.resend');
+    Route::get('/auth/email/resend', [AuthController::class, 'resendVerifyEmail'])
+    ->name('verification.resend');
 
+    // GROUP
     Route::post('/group', [GroupController::class, 'createGroup']);
+    Route::get('/group/invitation/{email}', [GroupController::class, 'sendInvitation'])
+    ->name('invitation.send');
 
-    //Route::resource('group', GroupController::class);
+    // NEED GROUP
     Route::group(['middleware' => ['groupExist']], function () {
         
+        //GROUP
         Route::put('/group', [GroupController::class, 'updateGroup']);
         Route::delete('/group', [GroupController::class, 'deleteGroup']);
         Route::get('/group', [GroupController::class, 'getGroup']);
+        //REWARDS
+        Route::post('/reward', [RewardController::class, 'createReward']);
+        Route::get('/reward/{id}', [RewardController::class, 'getRewardById'])->whereNumber('id');
+        Route::put('/reward/{id}', [RewardController::class, 'updateReward'])->whereNumber('id');
+        Route::delete('/reward//{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
+
+        Route::patch('/reward/redeem/{id}', [RewardController::class, 'updateRewardRedeem'])->whereNumber('id');
+        Route::patch('/reward/validate/{id}', [RewardController::class, 'updateRewardValidate'])->whereNumber('id');
+
+        Route::get('/group/reward', [RewardController::class, 'getGroupRewardList']);
         
-        //Route::group(['middleware' => ['rewardInGroupExist']], function () {
-
-            Route::post('/reward', [RewardController::class, 'createReward']);
-            Route::get('/reward/{id}', [RewardController::class, 'getRewardById'])->whereNumber('id');
-            Route::put('/reward/{id}', [RewardController::class, 'updateReward'])->whereNumber('id');
-            Route::delete('/reward//{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
-
-            Route::patch('/reward/redeem/{id}', [RewardController::class, 'updateRewardRedeem'])->whereNumber('id');
-            Route::patch('/reward/validate/{id}', [RewardController::class, 'updateRewardValidate'])->whereNumber('id');
-
-            Route::get('/group/reward', [RewardController::class, 'getGroupRewardList']);
-        //});
-
-
-        
-
+        //TASKS
         Route::post('/task', [TaskController::class, 'createTask']);
         Route::get('/task/{id}', [TaskController::class, 'getTaskById'])->whereNumber('id');
         Route::put('/task/{id}', [TaskController::class, 'updateTask'])->whereNumber('id');
@@ -74,7 +67,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::patch('/task/complete/{id}', [TaskController::class, 'updateTaskComplete'])->whereNumber('id');
         Route::patch('/task/validate/{id}', [TaskController::class, 'updateTaskCompletionValidation'])->whereNumber('id');
         Route::patch('/task/invalidate/{id}', [TaskController::class, 'updateTaskCompletionInValidation'])->whereNumber('id');
-
 
         Route::get('/group/task', [TaskController::class, 'getGroupTaskList']);
     });

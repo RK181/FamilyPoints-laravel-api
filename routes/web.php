@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('/auth/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+->name('verification.verify')->whereNumber('id');
+
+// GROUP
+Route::get('/group/invitation/{id}/{token}', [GroupController::class, 'acceptInvitation'])
+->middleware(['signed'])->name('invitation.accept');

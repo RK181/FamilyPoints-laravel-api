@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('invite_token')->nullable();
+            $table->string('invitation_token')->nullable();
             $table->string('password');
             $table->integer('points')->default(0);
             $table->rememberToken();
