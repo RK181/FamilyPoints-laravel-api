@@ -168,7 +168,7 @@ class RewardController extends Controller
             $user = $request->user();
             $group = $user->group;
 
-            $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
+            $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
                     'status' => false,
