@@ -40,40 +40,43 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/auth/logout', [AuthController::class, 'logOut']);
     Route::get('/email/resend', [AuthController::class, 'resendVerifyEmail'])->name('verification.resend');
 
-    Route::post('/group/create', [GroupController::class, 'createGroup']);
+    Route::post('/group', [GroupController::class, 'createGroup']);
 
     //Route::resource('group', GroupController::class);
     Route::group(['middleware' => ['groupExist']], function () {
         
-        Route::put('/group/update', [GroupController::class, 'updateGroup']);
-        Route::delete('/group/delete', [GroupController::class, 'deleteGroup']);
+        Route::put('/group', [GroupController::class, 'updateGroup']);
+        Route::delete('/group', [GroupController::class, 'deleteGroup']);
         Route::get('/group', [GroupController::class, 'getGroup']);
         
         //Route::group(['middleware' => ['rewardInGroupExist']], function () {
 
+            Route::post('/reward', [RewardController::class, 'createReward']);
+            Route::get('/reward/{id}', [RewardController::class, 'getRewardById'])->whereNumber('id');
+            Route::put('/reward/{id}', [RewardController::class, 'updateReward'])->whereNumber('id');
+            Route::delete('/reward//{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
+
             Route::patch('/reward/redeem/{id}', [RewardController::class, 'updateRewardRedeem'])->whereNumber('id');
             Route::patch('/reward/validate/{id}', [RewardController::class, 'updateRewardValidate'])->whereNumber('id');
 
-            Route::get('/group/reward/list', [RewardController::class, 'getGroupRewardList']);
-            Route::post('/reward/create', [RewardController::class, 'createReward']);
-            Route::put('/reward/update', [RewardController::class, 'updateReward']);
-            Route::get('/reward/{id}', [RewardController::class, 'getRewardById'])->whereNumber('id');
-            Route::delete('/reward/delete/{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
+            Route::get('/group/reward', [RewardController::class, 'getGroupRewardList']);
         //});
 
 
+        
+
+        Route::post('/task', [TaskController::class, 'createTask']);
+        Route::get('/task/{id}', [TaskController::class, 'getTaskById'])->whereNumber('id');
+        Route::put('/task/{id}', [TaskController::class, 'updateTask'])->whereNumber('id');
+        Route::delete('/task/{id}', [TaskController::class, 'deleteTask'])->whereNumber('id');
+        
         Route::patch('/task/approve/{id}', [TaskController::class, 'updateTaskCreationApprove'])->whereNumber('id');
         Route::patch('/task/complete/{id}', [TaskController::class, 'updateTaskComplete'])->whereNumber('id');
         Route::patch('/task/validate/{id}', [TaskController::class, 'updateTaskCompletionValidation'])->whereNumber('id');
         Route::patch('/task/invalidate/{id}', [TaskController::class, 'updateTaskCompletionInValidation'])->whereNumber('id');
 
 
-        Route::post('/task/create', [TaskController::class, 'createTask']);
-        Route::put('/task/update', [TaskController::class, 'updateTask']);
-        Route::get('/task/{id}', [TaskController::class, 'getTaskById'])->whereNumber('id');
-        Route::delete('/task/delete/{id}', [TaskController::class, 'deleteTask'])->whereNumber('id');
-        Route::get('/group/task/list', [TaskController::class, 'getGroupTaskList']);
-
+        Route::get('/group/task', [TaskController::class, 'getGroupTaskList']);
     });
 });
 

@@ -102,12 +102,11 @@ class RewardController extends Controller
     }
 
     // Protected Authorization required
-    public function updateReward(Request $request)
+    public function updateReward(Request $request, string $id)
     {
         try{
             $validateUser = Validator::make($request->all(), 
             [
-                'id' => 'required|integer|exists:rewards,id',
                 'title' => 'string',
                 'description' => 'string',
                 'cost' => 'integer',
@@ -125,7 +124,7 @@ class RewardController extends Controller
             $user = $request->user();
             $group = $user->group;
 
-            $reward = Reward::where('id', $request->id)->where('group_id', $group->id)->first();
+            $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
                     'status' => false,

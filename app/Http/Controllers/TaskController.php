@@ -79,12 +79,11 @@ class TaskController extends Controller
      * @param string $id The ID of the task to update.
      * @return \Illuminate\Http\JsonResponse The JSON response containing the status and message.
      */
-    public function updateTask(Request $request)
+    public function updateTask(Request $request, string $id)
     {
         try {
             $validateUser = Validator::make($request->all(), 
             [
-                'id' => 'required|integer|exists:tasks,id',
                 'title' => 'required|string',
                 'description' => 'required|string',
                 'reward' => 'required|integer',
@@ -101,7 +100,7 @@ class TaskController extends Controller
 
             $user = $request->user();
             $group = $user->group;
-            $task = Task::where('id', $request->id)->where('group_id', $group->id)->first();
+            $task = Task::where('id', $id)->where('group_id', $group->id)->first();
             if ($task == null) {
                 return response()->json([
                     'status' => false,
