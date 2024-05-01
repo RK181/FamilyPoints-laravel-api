@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -36,6 +39,7 @@ class AuthController extends Controller
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
             $user->save();
+            event(new Registered($user));
 
             return response()->json([
                 'status' => true,
@@ -117,5 +121,31 @@ class AuthController extends Controller
             ], 500);
         }
     }
+    public function verifyEmail(string $id) {
+        // obtenemos el usuario
+        $user = User::findOrFail($id);
+        // verificamos si el usuario ya ha verificado su email
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+        }
+    
+        return redirect()->to('/');
+    }
+    
+    /**
+     * Resend Verify Email
+     * @param EmailVerificationRequest $request
+     */
+    public function resendVerifyEmail(Request $request) {
+        $user = $request->user();
+    
+        $user->sendEmailVerificationNotification();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Email verification link sent on your email'
+        ], 200);
+    }
 
 }
+

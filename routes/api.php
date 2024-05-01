@@ -21,14 +21,25 @@ use Illuminate\Validation\ValidationException;
 |
 */
 
+/*
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+->middleware(['signed'])->name('verification.verify')->whereNumber('id');
+*/
+
+//
+
 // AUTH
 Route::post('/auth/signup', [AuthController::class, 'signUp']);
 Route::post('/auth/login', [AuthController::class, 'logIn']);
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+->middleware(['signed'])->name('verification.verify')->whereNumber('id');
 
 // PROTECTED
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // AUTH
     Route::post('/auth/logout', [AuthController::class, 'logOut']);
+    Route::get('/email/resend', [AuthController::class, 'resendVerifyEmail'])->name('verification.resend');
+
     Route::post('/group/create', [GroupController::class, 'createGroup']);
 
     //Route::resource('group', GroupController::class);
@@ -66,24 +77,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 });
 
-/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
-Route::post('/sanctum/token', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-        //'device_name' => 'required',
-    ]);
- 
-    $user = User::where('email', $request->email)->first();
- 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
-        ]);
-    }
- 
-    return $user->createToken("asd")->plainTextToken;
-});*/
+
