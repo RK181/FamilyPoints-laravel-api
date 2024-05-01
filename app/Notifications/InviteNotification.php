@@ -41,7 +41,7 @@ class InviteNotification extends Notification
             ->subject('You have been invited to join a group')
             ->line('User ' . $this->user_name . ' invited you to join the group')
             ->line('Click the button below to accept the invitation.')
-            ->action('Accept the Invitation', $this->notification_url)
+            ->action('Accept Invitation', $this->notification_url)
             ->line('If you do not want to accept the invitation, you can ignore this email.');
             
     }
