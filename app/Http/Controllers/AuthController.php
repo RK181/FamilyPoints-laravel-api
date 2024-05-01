@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Notifications\InviteNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -121,6 +124,11 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Verify Email
+     * @param string $id
+     */
     public function verifyEmail(string $id) {
         // obtenemos el usuario
         $user = User::findOrFail($id);
@@ -137,15 +145,20 @@ class AuthController extends Controller
      * @param EmailVerificationRequest $request
      */
     public function resendVerifyEmail(Request $request) {
-        $user = $request->user();
-    
-        $user->sendEmailVerificationNotification();
+        try {
+            $user = $request->user();
+            $user->sendEmailVerificationNotification();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Email verification link sent on your email'
-        ], 200);
+            return response()->json([
+                'status' => true,
+                'message' => 'Email verification link sent on your email'
+            ], 200);
+        } catch (\Throwable) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Server error'
+            ], 500);
+        }
     }
-
 }
 
