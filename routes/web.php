@@ -21,8 +21,8 @@ Route::get('/', function () {
 
 
 Route::get('/auth/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-->name('verification.verify')->whereNumber('id');
+->middleware(['signed'])->name('verification.verify')->whereNumber('id');
 
 // GROUP
 Route::get('/group/invitation/{id}/{token}', [GroupController::class, 'acceptInvitation'])
-->middleware(['signed'])->name('invitation.accept');
+->middleware(['signed'])->name('invitation.accept')->whereNumber('id');
