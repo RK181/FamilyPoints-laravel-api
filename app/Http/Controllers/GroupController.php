@@ -6,6 +6,7 @@ use App\Models\Group;
 use App\Models\User;
 use App\Notifications\InviteNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
@@ -204,11 +205,19 @@ class GroupController extends Controller
      */
     public function sendInvitation(Request $request, string $email) {
         try {
-            $validateUser = Validator::make($request->all(), 
-            [
-                'email' => 'email|exists:users,email',
-            ]);
+            $validateUser = Validator::make([], []);
+            
             $couple = User::where('email', $email)->first();
+            if ($couple == null) {
+                $validateUser->errors()->add(
+                    'email', 'User not found'
+                );
+                return response()->json([
+                    'status' => false,
+                    'message' => 'BadRequest',
+                    'errors' => $validateUser->errors()
+                ], 400);
+            }
             $user = $request->user();
             if ($user->id == $couple->id) {
                 $validateUser->errors()->add(
@@ -220,7 +229,7 @@ class GroupController extends Controller
                     'errors' => $validateUser->errors()
                 ], 400);
             }
-            if (!$user->hasVerifiedEmail()) {
+            if (!$couple->hasVerifiedEmail()) {
                 $validateUser->errors()->add(
                     'email', 'Couple need to verify email'
                 );
@@ -262,15 +271,17 @@ class GroupController extends Controller
         try {
             // obtenemos el usuario
             $couple = User::where('id', $id)->first();
-            $user = User::where('invitation_tokens', $token)->first();
+            $user = User::where('invitation_token', $token)->first();
             // si el usuario no existe o el token no es el mismo
             if ($couple->group->id == 0 && $user->group->id != 0) {
                 $group = $user->group;
                 if ($group->couple_id == 0) {
+                    DB::beginTransaction();
                     $group->couple_id = $couple->id;
                     $group->save();
                     $user->invitation_token = null;
                     $user->save();
+                    DB::commit();
                 }
             }
             return view('status')->with([
@@ -279,6 +290,7 @@ class GroupController extends Controller
             ]); 
 
         } catch (\Throwable) {
+            DB::rollBack();
             return abort(500, 'Server error: algo ha ido mal intentalo mas tarde');
         }
     }
