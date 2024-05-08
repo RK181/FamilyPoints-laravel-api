@@ -25,10 +25,11 @@ use Illuminate\Validation\ValidationException;
 
 // AUTH
 Route::post('/auth/signup', [AuthController::class, 'signUp']);
+// To login need to be verified
 Route::post('/auth/login', [AuthController::class, 'logIn']);
 
 // PROTECTED
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // AUTH
     Route::post('/auth/logout', [AuthController::class, 'logOut']);
     Route::get('/auth/email/resend', [AuthController::class, 'resendVerifyEmail'])
