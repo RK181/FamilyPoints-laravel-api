@@ -25,9 +25,18 @@ class AuthController extends Controller
             $validateUser = Validator::make($request->all(), 
             [
                 'name' => 'required',
-                'email' => 'required|email|unique:users,email',
+                'email' => 'required|email',
                 'password' => 'required'
             ]);
+
+            $email = $request->email;
+            $user = User::where('email', $email)->first() ?? new User();
+            if($user && $user->hasVerifiedEmail()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Email already exists',
+                ], 400);
+            }
 
             if($validateUser->fails()){
                 return response()->json([
@@ -37,7 +46,7 @@ class AuthController extends Controller
                 ], 400);
             }
 
-            $user = new User();
+            
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
