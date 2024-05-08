@@ -29,8 +29,7 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
-            $email = $request->email;
-            $user = User::where('email', $email)->first() ?? new User();
+            $user = User::where('email', $request->email)->first() ?? new User();
             if($user && $user->hasVerifiedEmail()){
                 return response()->json([
                     'status' => false,
@@ -89,11 +88,17 @@ class AuthController extends Controller
             }
             
             $user = User::where('email', $request->email)->first();
-
             if(! $user || ! Hash::check($request->password, $user->password)){
                 return response()->json([
                     'status' => false,
                     'message' => 'The provided credentials are incorrect.',
+                ], 401);
+            }
+
+            if(!$user->hasVerifiedEmail()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Email not verified, check your email to verify it',
                 ], 401);
             }
 
@@ -159,7 +164,8 @@ class AuthController extends Controller
     
     /**
      * Resend Verify Email
-     * @param EmailVerificationRequest $request
+     * @param EmailVerificationRequest $reques
+     * @deprecated version 0.1
      */
     public function resendVerifyEmail(Request $request) {
         try {
