@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
     return view('welcome');
 });*/
 
-
+// AUTH
 Route::get('/auth/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
 ->middleware(['signed'])->name('verification.verify')->whereNumber('id');
 
