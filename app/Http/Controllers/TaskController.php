@@ -35,7 +35,7 @@ class TaskController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -54,13 +54,13 @@ class TaskController extends Controller
             $task->save();
             
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Created Task'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -92,7 +92,7 @@ class TaskController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -103,7 +103,7 @@ class TaskController extends Controller
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
             if ($task == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'Task not found'
                 ], 404);
             }
@@ -115,13 +115,13 @@ class TaskController extends Controller
             $task->save();
 
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Updated Task'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -145,14 +145,14 @@ class TaskController extends Controller
             $task = Task::where('id', $id)->where('group_id', $group->id)->where('user_id', null)->first();
             if ($task == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'Task not found'
                 ], 404);
             }
 
             if($user->id == $task->creator_id && $group->conf_t_approve){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'User not allowed'
                 ], 403);
             }
@@ -164,13 +164,13 @@ class TaskController extends Controller
             }
 
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Updated Task'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -197,7 +197,7 @@ class TaskController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -208,14 +208,14 @@ class TaskController extends Controller
             $task = Task::where('id', $id)->where('group_id', $group->id)->where('user_id', null)->first();
             if ($task == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'Task not found'
                 ], 404);
             }
 
             if($task->approve == false && $group->conf_t_approve){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'User not allowed'
                 ], 403);
             }
@@ -241,13 +241,13 @@ class TaskController extends Controller
             }
 
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Updated Task'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -271,14 +271,14 @@ class TaskController extends Controller
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
             if ($task == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'Task not found'
                 ], 404);
             }
 
             if($task->complete == false || ($user->id == $task->user_id && $group->conf_t_validate)){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'User not allowed'
                 ], 403);
             }
@@ -295,13 +295,13 @@ class TaskController extends Controller
             }
             
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Updated Task'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -315,14 +315,14 @@ class TaskController extends Controller
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
             if ($task == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'Task not found'
                 ], 404);
             }
 
             if($group->conf_t_invalidate == false || $task->validate == false || $user->id == $task->user_id){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'User not allowed'
                 ], 403);
             }
@@ -342,13 +342,13 @@ class TaskController extends Controller
             }
 
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Updated Task'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -362,7 +362,7 @@ class TaskController extends Controller
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
             if ($task == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'Task not found'
                 ], 404);
             }
@@ -374,7 +374,7 @@ class TaskController extends Controller
             
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -393,7 +393,7 @@ class TaskController extends Controller
             
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -408,7 +408,7 @@ class TaskController extends Controller
             $task = Task::where('id', $id)->where('group_id', $group->id)->first();
             if ($task == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'Task not found'
                 ], 404);
             }
@@ -416,13 +416,13 @@ class TaskController extends Controller
             $task->delete();
 
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Deleted Task'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }

@@ -32,14 +32,12 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first() ?? new User();
             if($user && $user->hasVerifiedEmail()){
                 return response()->json([
-                    'status' => false,
                     'message' => 'Email already exists',
                 ], 400);
             }
 
             if($validateUser->fails()){
                 return response()->json([
-                    'status' => false,
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -53,13 +51,11 @@ class AuthController extends Controller
             event(new Registered($user));
 
             return response()->json([
-                'status' => true,
                 'message' => 'Success, SignUp'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
                 'message' => 'Server error'
             ], 500);
         }
@@ -81,7 +77,6 @@ class AuthController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                    'status' => false,
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -90,14 +85,12 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
             if(! $user || ! Hash::check($request->password, $user->password)){
                 return response()->json([
-                    'status' => false,
                     'message' => 'The provided credentials are incorrect.',
                 ], 401);
             }
 
             if(!$user->hasVerifiedEmail()){
                 return response()->json([
-                    'status' => false,
                     'message' => 'Email not verified, check your email to verify it',
                 ], 401);
             }
@@ -110,7 +103,6 @@ class AuthController extends Controller
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
                 'message' => 'Server error'
             ], 500);
         }
@@ -127,13 +119,11 @@ class AuthController extends Controller
             $user->tokens()->delete();
 
             return response()->json([
-                'status' => true,
                 'message' => 'Success, LogOut'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
                 'message' => 'Server error'
             ], 500);
         }
@@ -173,12 +163,10 @@ class AuthController extends Controller
             $user->sendEmailVerificationNotification();
 
             return response()->json([
-                'status' => true,
                 'message' => 'Email verification link sent on your email'
             ], 200);
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
                 'message' => 'Server error'
             ], 500);
         }

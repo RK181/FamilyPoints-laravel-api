@@ -32,7 +32,7 @@ class GroupController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -52,13 +52,13 @@ class GroupController extends Controller
             $group->save();
             
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Created Group'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -74,7 +74,7 @@ class GroupController extends Controller
             // If not, error
             if ($group->id == 0) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'No group found'
                 ], 404);
             }
@@ -85,7 +85,7 @@ class GroupController extends Controller
             
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -108,7 +108,7 @@ class GroupController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -127,7 +127,7 @@ class GroupController extends Controller
                         'Couple can not be the same as creator'
                     );
                     return response()->json([
-                        'status' => false,
+                         
                         'message' => 'BadRequest',
                         'errors' => $validateUser->errors()
                     ], 400);
@@ -158,13 +158,13 @@ class GroupController extends Controller
             $group->save();
             
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Updated Group'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -180,20 +180,20 @@ class GroupController extends Controller
             // If not, error
             if ($group->id == 0) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'No group found'
                 ], 404);
             }
 
             $group->delete();
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Deleted Group'
             ], 200);
             
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -213,7 +213,7 @@ class GroupController extends Controller
                     'email', 'User not found'
                 );
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -224,7 +224,7 @@ class GroupController extends Controller
                     'email', 'Couple can not be the same as creator'
                 );
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -234,7 +234,7 @@ class GroupController extends Controller
                     'email', 'Couple need to verify email'
                 );
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -252,12 +252,12 @@ class GroupController extends Controller
             $user->save();
 
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Invitation sent to the user email'
             ], 200);
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }

@@ -23,7 +23,7 @@ class RewardController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -42,13 +42,13 @@ class RewardController extends Controller
             $reward->save();
             
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Created Reward'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -65,7 +65,7 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'No reward found'
                 ], 404);
             }
@@ -76,7 +76,7 @@ class RewardController extends Controller
             
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -95,7 +95,7 @@ class RewardController extends Controller
             
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -115,7 +115,7 @@ class RewardController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -127,7 +127,7 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'No reward found'
                 ], 404);
             }
@@ -148,13 +148,13 @@ class RewardController extends Controller
             $reward->save();
             
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Updated Reward'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -170,14 +170,14 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'No reward found'
                 ], 404);
             }
 
            if ($reward->user_id != $user->id) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'Forbidden'
                 ], 403);
             }
@@ -196,13 +196,13 @@ class RewardController extends Controller
             }
             
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Redeem Reward'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -218,14 +218,14 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'No reward found'
                 ], 404);
             }
 
            if ($reward->user_id == $user->id && $group->conf_r_valiadte) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'Forbidden'
                 ], 403);
             }
@@ -240,13 +240,13 @@ class RewardController extends Controller
             }
             
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Validate Reward'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -263,7 +263,7 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
-                    'status' => false,
+                     
                     'message' => 'No reward found'
                 ], 404);
             }
@@ -271,13 +271,13 @@ class RewardController extends Controller
             $reward->delete();
 
             return response()->json([
-                'status' => true,
+                 
                 'message' => 'Success, Deleted Reward'
             ], 200);
             
         } catch (\Throwable) {
             return response()->json([
-                'status' => false,
+                 
                 'message' => 'Server error'
             ], 500);
         }
