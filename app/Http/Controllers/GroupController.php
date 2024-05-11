@@ -20,7 +20,6 @@ class GroupController extends Controller
         try{
             $validateUser = Validator::make($request->all(), 
             [
-                //'user_id' => 'required|integer', // creator_id
                 'name' => 'required',
                 'points_name' => 'required|string',
                 'points_icon' => 'required|string',
@@ -32,7 +31,6 @@ class GroupController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -52,13 +50,11 @@ class GroupController extends Controller
             $group->save();
             
             return response()->json([
-                 
                 'message' => 'Success, Created Group'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -97,7 +93,6 @@ class GroupController extends Controller
         try{
             $validateUser = Validator::make($request->all(), 
             [
-                //'couple.email' => 'email|exists:users,email',
                 'points_name' => 'string',
                 'points_icon' => 'string',
                 'conf_t_approve' => 'boolean',
@@ -108,7 +103,6 @@ class GroupController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -117,22 +111,6 @@ class GroupController extends Controller
             $user = $request->user();
             $group = $user->group;
             
-            /*if ($group->couple_id == null && $request->couple['email'] != null) {
-                $couple_id = User::select('id')->where('email', $request->couple['email'])->first()->id;  
-                if ($user->id != $couple_id) {
-                    $group->couple_id = $couple_id;
-                } else {
-                    $validateUser->errors()->add(
-                        'couple.email',
-                        'Couple can not be the same as creator'
-                    );
-                    return response()->json([
-                         
-                        'message' => 'BadRequest',
-                        'errors' => $validateUser->errors()
-                    ], 400);
-                }
-            }*/
             if ($request->has('name')) {
                 $group->name = $request->name;
             }
@@ -158,13 +136,11 @@ class GroupController extends Controller
             $group->save();
             
             return response()->json([
-                 
                 'message' => 'Success, Updated Group'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -173,27 +149,16 @@ class GroupController extends Controller
     public function deleteGroup(Request $request)
     {
         try {
-            // Get user 
             $user = $request->user();
-            // Get group if exist
             $group = $user->group;
-            // If not, error
-            if ($group->id == 0) {
-                return response()->json([
-                     
-                    'message' => 'No group found'
-                ], 404);
-            }
-
             $group->delete();
+
             return response()->json([
-                 
                 'message' => 'Success, Deleted Group'
             ], 200);
             
         } catch (\Throwable) {
             return response()->json([
-                 
                 'message' => 'Server error'
             ], 500);
         }

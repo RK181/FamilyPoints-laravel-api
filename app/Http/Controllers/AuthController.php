@@ -26,7 +26,7 @@ class AuthController extends Controller
             [
                 'name' => 'required',
                 'email' => 'required|email',
-                'password' => 'required'
+                'password' => 'required|min:8'
             ]);
 
             $user = User::where('email', $request->email)->first() ?? new User();
@@ -72,7 +72,7 @@ class AuthController extends Controller
             $validateUser = Validator::make($request->all(), 
             [
                 'email' => 'required|email',
-                'password' => 'required'
+                'password' => 'required|min:8'
             ]);
 
             if($validateUser->fails()){
@@ -96,7 +96,6 @@ class AuthController extends Controller
             }
 
             return response()->json([
-                'status' => true,
                 'message' => 'Success, LogIn',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);

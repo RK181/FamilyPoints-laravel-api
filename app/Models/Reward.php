@@ -27,7 +27,7 @@ class Reward extends Model
     ];
 
     /**
-     * Funcion User 1 - 0..* Rewards
+     * Relacion User 1 - 0..* Rewards
      */
     public function user(): BelongsTo 
     { 
@@ -35,7 +35,7 @@ class Reward extends Model
     }
 
     /**
-     * Funcion Group 1 - 0..* Rewards
+     * Relacion Group 1 - 0..* Rewards
      */
     public function group(): BelongsTo
     { 

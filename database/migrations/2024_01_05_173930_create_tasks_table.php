@@ -24,10 +24,10 @@ return new class extends Migration
             $table->boolean('validate')->default(false);
             $table->date('expire_at');
 
-            // RELACTON TO GROUP 1
+            // RELACTON TASK GROUP
             $table->foreignId('group_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
 
-            // RELACTON TO USER 0..1
+            // RELACTON TASK USER
             $table->foreignId('user_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('creator_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
 

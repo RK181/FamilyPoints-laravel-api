@@ -53,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Funcion User 1 - 0..* Rewards
+     * Relacion User 1 - 0..* Rewards
      */
     public function rewards(): HasMany
     { 
@@ -61,21 +61,25 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Funcion User 0..1 - 0..* Tasks
+     * Relacion User(Creator) 1 - 0..* Tasks
      */
     public function tasks(): HasMany 
+    { 
+        return $this->hasMany(Task::class, 'creator_id'); 
+    }
+
+    /**
+     * Relacion User 0..1 - 0..* Tasks
+     */
+    public function completedTasks(): HasMany 
     { 
         return $this->hasMany(Task::class); 
     }
 
     /**
-     * Funcion User 1 - 0..1 Group
+     * Relacion User(Creator) 1 - 0..1 Group
+     * Relacion User(Couple) 0..1 - 0..1 Group (el grupo contiene el id de la pareja)
      */
-
-    /**
-     * Funcion User 0..1 - 0..1 Group
-     */
-
     public function group(): HasOne
     {
         $group = $this->hasOne(Group::class, 'creator_id')->withDefault();

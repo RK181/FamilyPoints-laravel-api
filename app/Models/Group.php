@@ -22,10 +22,11 @@ class Group extends Model
         'updated_at',
         'creator_id',
         'couple_id',
+        'id',
     ];
 
     /**
-     * Funcion Group 1 - 0..* Tasks
+     * Relacion Group 1 - 0..* Tasks
      */
     public function tasks(): HasMany 
     { 
@@ -33,7 +34,7 @@ class Group extends Model
     }
 
     /**
-     * Funcion Group 1 - 0..* Rewards
+     * Relacion Group 1 - 0..* Rewards
      */
     public function rewards(): HasMany
     { 
@@ -41,7 +42,7 @@ class Group extends Model
     }
 
     /**
-     * Funcion User 1 - 0..1 Group
+     * Relacion User 1 - 0..1 Group
      */
     public function creator(): BelongsTo
     { 
@@ -49,7 +50,7 @@ class Group extends Model
     }
 
     /**
-     * Funcion User 0..1 - 0..1 Group
+     * Relacion User 0..1 - 0..1 Group
      */
     public function couple(): BelongsTo
     { 

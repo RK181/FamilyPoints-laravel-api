@@ -19,6 +19,8 @@ class Task extends Model
         'created_at',
         'updated_at',
         'creator_id',
+        'group_id',
+        'user_id',
     ];
 
     protected $casts = [
@@ -26,21 +28,23 @@ class Task extends Model
     ];
 
     /**
-     * Funcion User 0..1 - 0..* Tasks
-     * If NO user return NULL
+     * Relacion User 0..1 - 0..* Tasks
      */
     public function user(): BelongsTo
     { 
         return $this->belongsTo(User::class)->withDefault(); 
     }
 
+    /**
+     * Relacion User 1 - 0..* Tasks
+     */
     public function creator(): BelongsTo
     { 
         return $this->belongsTo(User::class, 'creator_id'); 
     }
 
     /**
-     * Funcion Group 1 - 0..* Tasks
+     * Relacion Group 1 - 0..* Tasks
      */
     public function group(): BelongsTo
     { 

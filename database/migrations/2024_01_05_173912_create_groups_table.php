@@ -24,11 +24,10 @@ return new class extends Migration
             $table->boolean('conf_t_invalidate')->default(true);
             $table->boolean('conf_r_valiadte')->default(true);
 
-            // RELACTON TO USER CREATOR 1..0-1
+            // RELACTON CREATOR GROUP
             $table->foreignId('creator_id')->unique()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            // RELACTON TO USER COUPLE 0-1..0-1
+            // RELACTON TO COUPLE GROUP
             $table->foreignId('couple_id')->nullable()->unique()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-
         });
     }
 

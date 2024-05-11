@@ -23,11 +23,10 @@ return new class extends Migration
             $table->boolean('validate')->default(false);
             $table->date('expire_at');
 
-
-            // RELACTON TO GROUP 1
+            // RELACTON REWARD GROUP
             $table->foreignId('group_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
 
-            // RELACTON TO USER 1
+            // RELACTON REWARD USER
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }

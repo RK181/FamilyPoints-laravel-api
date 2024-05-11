@@ -189,20 +189,6 @@ class TaskController extends Controller
     public function updateTaskComplete(Request $request, string $id)
     {
         try {
-            /*$request['id'] = $id;
-            $validateUser = Validator::make($request->all(), 
-            [
-                'id' => 'required|integer|exists:tasks,id'
-            ]);
-
-            if($validateUser->fails()){
-                return response()->json([
-                     
-                    'message' => 'BadRequest',
-                    'errors' => $validateUser->errors()
-                ], 400);
-            }*/
-
             $user = $request->user();
             $group = $user->group;
             $task = Task::where('id', $id)->where('group_id', $group->id)->where('user_id', null)->first();
