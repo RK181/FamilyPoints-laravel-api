@@ -6,6 +6,7 @@ use App\Models\Reward;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class RewardController extends Controller
@@ -23,7 +24,6 @@ class RewardController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -42,13 +42,11 @@ class RewardController extends Controller
             $reward->save();
             
             return response()->json([
-                 
                 'message' => 'Success, Created Reward'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -115,7 +113,6 @@ class RewardController extends Controller
 
             if($validateUser->fails()){
                 return response()->json([
-                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -127,7 +124,6 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
-                     
                     'message' => 'No reward found'
                 ], 404);
             }
@@ -170,39 +166,37 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
-                     
                     'message' => 'No reward found'
                 ], 404);
             }
 
            if ($reward->user_id != $user->id) {
                 return response()->json([
-                     
                     'message' => 'Forbidden'
                 ], 403);
             }
             
             if ($reward->redeem == false) {
-                // Si para canjear la recompensa no es necesario validar el canjeo a posteriori
-                if ($group->conf_r_valiadte == false) {
-                    $couple = $reward->user;
-                    $couple->points = $couple->points - $reward->cost;
-                    $couple->save();
+                DB::transaction(function () use ($reward, $group) {
+                    // Si para canjear la recompensa no es necesario validar el canjeo a posteriori
+                    if ($group->conf_r_valiadte == false) {
+                        $couple = $reward->user;
+                        $couple->points = $couple->points - $reward->cost;
+                        $couple->save();
 
-                    $reward->validate = true;
-                }
-                $reward->redeem = true;
-                $reward->save();
+                        $reward->validate = true;
+                    }
+                    $reward->redeem = true;
+                    $reward->save();
+                });
             }
             
             return response()->json([
-                 
                 'message' => 'Success, Redeem Reward'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -218,35 +212,33 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
-                     
                     'message' => 'No reward found'
                 ], 404);
             }
 
            if ($reward->user_id == $user->id && $group->conf_r_valiadte) {
                 return response()->json([
-                     
                     'message' => 'Forbidden'
                 ], 403);
             }
 
             if ($reward->validate == false && $reward->redeem) {
-                $couple = $reward->user;
-                $couple->points = $couple->points - $reward->cost;
-                $couple->save();
+                DB::transaction(function () use ($reward) {
+                    $couple = $reward->user;
+                    $couple->points = $couple->points - $reward->cost;
+                    $couple->save();
 
-                $reward->validate = true;
-                $reward->save();
+                    $reward->validate = true;
+                    $reward->save();
+                });
             }
             
             return response()->json([
-                 
                 'message' => 'Success, Validate Reward'
             ], 200);
 
         } catch (\Throwable) {
             return response()->json([
-                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -263,7 +255,6 @@ class RewardController extends Controller
             $reward = Reward::where('id', $id)->where('group_id', $group->id)->first();
             if ($reward == null) {
                 return response()->json([
-                     
                     'message' => 'No reward found'
                 ], 404);
             }
@@ -271,13 +262,11 @@ class RewardController extends Controller
             $reward->delete();
 
             return response()->json([
-                 
                 'message' => 'Success, Deleted Reward'
             ], 200);
             
         } catch (\Throwable) {
             return response()->json([
-                 
                 'message' => 'Server error'
             ], 500);
         }
