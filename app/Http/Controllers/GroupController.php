@@ -170,7 +170,9 @@ class GroupController extends Controller
      */
     public function sendInvitation(Request $request, string $email) {
         try {
-            $validateUser = Validator::make([], []);
+            $validateUser = Validator::make(['email' => $email], [
+                'email' => 'required|email'
+            ]);
             
             $couple = User::where('email', $email)->first();
             if ($couple == null) {
@@ -178,18 +180,16 @@ class GroupController extends Controller
                     'email', 'User not found'
                 );
                 return response()->json([
-                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
             }
             $user = $request->user();
-            if ($user->id == $couple->id) {
+            if ($user->id == $couple->id || $user->group->couple_id != 0) {
                 $validateUser->errors()->add(
-                    'email', 'Couple can not be the same as creator'
+                    'email', 'Couple can not be already in a group or already have a couple'
                 );
                 return response()->json([
-                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -199,7 +199,6 @@ class GroupController extends Controller
                     'email', 'Couple need to verify email'
                 );
                 return response()->json([
-                     
                     'message' => 'BadRequest',
                     'errors' => $validateUser->errors()
                 ], 400);
@@ -217,12 +216,10 @@ class GroupController extends Controller
             $user->save();
 
             return response()->json([
-                 
                 'message' => 'Invitation sent to the user email'
             ], 200);
         } catch (\Throwable) {
             return response()->json([
-                 
                 'message' => 'Server error'
             ], 500);
         }
@@ -241,12 +238,12 @@ class GroupController extends Controller
             if ($couple->group->id == 0 && $user->group->id != 0) {
                 $group = $user->group;
                 if ($group->couple_id == 0) {
-                    DB::beginTransaction();
-                    $group->couple_id = $couple->id;
-                    $group->save();
-                    $user->invitation_token = null;
-                    $user->save();
-                    DB::commit();
+                    DB::transaction(function () use ($user, $group, $couple) {
+                        $group->couple_id = $couple->id;
+                        $group->save();
+                        $user->invitation_token = null;
+                        $user->save();
+                    });
                 }
             }
             return view('status')->with([
@@ -255,7 +252,6 @@ class GroupController extends Controller
             ]); 
 
         } catch (\Throwable) {
-            DB::rollBack();
             return abort(500, 'Server error: algo ha ido mal intentalo mas tarde');
         }
     }
