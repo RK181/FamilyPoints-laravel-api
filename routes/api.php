@@ -51,7 +51,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::post('/reward', [RewardController::class, 'createReward']);
         Route::get('/reward/{id}', [RewardController::class, 'getRewardById'])->whereNumber('id');
         Route::put('/reward/{id}', [RewardController::class, 'updateReward'])->whereNumber('id');
-        Route::delete('/reward//{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
+        Route::delete('/reward/{id}', [RewardController::class, 'deleteReward'])->whereNumber('id');
 
         Route::patch('/reward/redeem/{id}', [RewardController::class, 'updateRewardRedeem'])->whereNumber('id');
         Route::patch('/reward/validate/{id}', [RewardController::class, 'updateRewardValidate'])->whereNumber('id');
