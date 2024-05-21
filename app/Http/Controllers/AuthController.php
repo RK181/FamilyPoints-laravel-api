@@ -51,7 +51,7 @@ class AuthController extends Controller
             event(new Registered($user));
 
             return response()->json([
-                'message' => 'Success, SignUp'
+                'message' => 'Success, check your email to verify the account'
             ], 200);
 
         } catch (\Throwable) {
