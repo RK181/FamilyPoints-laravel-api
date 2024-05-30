@@ -86,8 +86,10 @@ class RewardController extends Controller
             $user = $request->user();
             $group = $user->group;
             
-            $rewards = $group->rewards()->with('user')->get();
-            //$rewards->user;
+            $rewards = $group->rewards()->with('user')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('expire_at', 'desc')
+            ->get();
 
             return response()->json($rewards, 200);
             

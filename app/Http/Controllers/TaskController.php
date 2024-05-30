@@ -358,7 +358,10 @@ class TaskController extends Controller
             $group = $user->group;
 
             // Get all tasks from group
-            $tasks = $group->tasks()->with('creator')->with('user')->get();
+            $tasks = $group->tasks()->with('creator')->with('user')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('expire_at', 'desc')
+            ->get();
 
             return response()->json($tasks, 200);
             
