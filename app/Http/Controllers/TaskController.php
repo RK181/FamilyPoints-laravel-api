@@ -294,7 +294,7 @@ class TaskController extends Controller
                 ], 404);
             }
 
-            if($group->conf_t_invalidate == false || $task->validate == false || $user->id == $task->user_id){
+            if($group->conf_t_invalidate == false || $task->validate == false){
                 return response()->json([
                     'message' => 'User not allowed'
                 ], 403);
